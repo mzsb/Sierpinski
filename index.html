@@ -1,14 +1,20 @@
 <body style = "background: #000000;"> 
-	<canvas id="canv"></canvas>
 	<div class="slidecontainer" style=" display: flex; align-items: center; justify-content: center;">
-		<input type="range" min="2.001" max="10" value="3" step="0.1" id="range" class="slider">
+		<input type="range" min="2" max="10" value="3" step="0.1" id="range" class="slider" style="margin: 0px 0px 10px 0px;">
 	</div>
+
+	<canvas id="canv"></canvas>
+
+	<div class="slidecontainer" style=" display: flex; align-items: center; justify-content: center;">
+		<input type="range" min="1" max="10" value="2" step="0.1" id="range2" class="slider" style="margin: 10px 0px 0px 0px;">
+	<</div>
 </body>
 <script>
 	var maxWidth = window.innerWidth - 15;
 	var maxHeight = window.innerHeight - 50;
 	const canvas = document.getElementById('canv');
 	const slider = document.getElementById("range");
+	const slider2 = document.getElementById("range2");
 	canvas.width = maxWidth;
 	canvas.height = maxHeight;
 	const context = canvas.getContext('2d');
@@ -25,11 +31,16 @@
 		sierpinski(this.value);
 	}
 
+	slider2.oninput = function() {
+		sierpinski(slider.value);
+	}
+
 	function sierpinski(vertices) {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		const polygon = [];
 	
-		polygon[0] = [0, -radius];
+		var value = slider2.value;
+		polygon[0] = [0, -radius * (1 - 1 / value)];
 
 		for(i = 1; i < vertices; i++) {
 			var angle = i * 2 * Math.PI / vertices;
@@ -47,8 +58,10 @@
 		
 		for(n = 0; n < 50000; n++) {
 			randomPoint = polygon[Math.floor(Math.random() * vertices)];
+			
+			randomPoint = [randomPoint[0] * value - x, randomPoint[1] * value - y];
 		
-			randomCoord = [(randomPoint[0] + randomCoord[0]) / 2, (randomPoint[1] + randomCoord[1]) / 2]
+			randomCoord = [(randomPoint[0] + randomCoord[0]) / value, (randomPoint[1] + randomCoord[1]) / value]
 
 			context.fillStyle = `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 			
@@ -80,8 +93,8 @@
 
 .slider {
   -webkit-appearance: none;
-  width: 50%;
-  height: 10px;
+  width: 30%;
+  height: 5px;
   border-radius: 5px;  
   background: #ffffff;
   outline: none;
@@ -93,8 +106,8 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%; 
   background: #ffffff;
   cursor: pointer;
