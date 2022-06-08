@@ -59,7 +59,7 @@
 		var randomY = y;
 		var randomVertex = [];
 		var pixelOffset;
-		for (n = 0; n < 50000; n++) {
+		for (n = 0; n < 50000 / pixel; n++) {
 			randomVertex = polygon[Math.floor(Math.random() * vertices)];
 
 			randomX = ((randomVertex[0] * scale - x) + randomX) / scale;
@@ -88,11 +88,11 @@
 	}
 
 	#vertice-slider {
-		transform: rotate(150deg);
+		transform: rotate(30deg);
 	}
 
 	#scale-slider {
-		transform: rotate(30deg);
+		transform: rotate(150deg);
 	}
 
 	#pixel-slider {
