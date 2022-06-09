@@ -1,10 +1,15 @@
-<body style="background: #000000; margin: 0; padding: 0; border: 0;">
+<head>
+	<link rel="icon" type="image/x-icon" href="/favicon.png">
+</head>
+<body style="background: #000000; margin: 0; padding: 0; border: 0; display: flex;">
 	<canvas id="canv"></canvas>
 	<input type="range" min="2" max="12" value="3" step="0.001" id="vertice-slider" class="slider">
 	<input type="range" min="1" max="11" value="2" step="0.001" id="scale-slider" class="slider">
-	<input type="range" min="0.7" max="10" value="1" step="0.001" id="pixel-slider" class="slider">
+	<input type="range" min="0.7" max="10.7" value="1.7" step="0.001" id="pixel-slider" class="slider">
 </body>
 <script>
+    document.title = "Sierpinski";
+	console.log("Mathematical simulation by Barnabás Mózs. https://github.com/mzsb/sierpinski");
 	const canvas = document.getElementById('canv');
 	const sliders = [
 		document.getElementById("vertice-slider"),
@@ -12,42 +17,63 @@
 		document.getElementById("pixel-slider")
 	];
 	const context = canvas.getContext('2d');
+	const rawParams = window.location.href?.split("?")[1];
+	var params = rawParams?.split("&")?.map(p => p?.split("=")[1])
 
-	init();
+	if(!params || params.filter(p => p !== undefined).length != 3) {
+		setParams();
+	}
+
+	//init variables
+	var maxWidth;
+	var maxHeight;
+	var radius;
+	var x;
+	var y;
+
+	//sierpinski variables
+	var values = [/* purple: vertices, green: scale, orange: pixel */];
+	var polygon = [];
+	var angle;
+	var randomX;
+	var randomY;
+	var randomVertex = [];
 
 	function init() {
-		var maxWidth = window.innerWidth - 3;
-		var maxHeight = window.innerHeight - 1;
+		maxWidth = window.innerWidth - 3;
+		maxHeight = window.innerHeight - 1;
 		canvas.width = maxWidth;
 		canvas.height = maxHeight;
-		var x = maxWidth / 2;
-		y = (maxWidth > maxHeight ? maxHeight : maxWidth) / 2;
-		var radius = (x > y ? y : x);
+		x = maxWidth / 2;
+		y = maxHeight / 2;
+		radius = (x > y ? y : x);
 
 		for (i = 0; i < sliders.length; i++) {
-			sliders[i].oninput = () => sierpinski(x, y, radius);
-			var angle = i * 2 * Math.PI / 3;
-
+			sliders[i].oninput = () => {
+				setParams();
+				sierpinski(x, y, radius) 
+			};
 			sliders[i].style.width = 2 * radius;
 			sliders[i].style.left = x - radius;
 			sliders[i].style.top = y;
+			if(parseFloat(params[i]) > parseFloat(sliders[i].max)) {
+				sliders[i].max = params[i];
+			}
+			sliders[i].value = params[i];
 		}
 
 		sierpinski(x, y, radius);
 	}
 
 	function sierpinski(x, y, radius) {
-		const vertices = sliders[0].value;
-		const scale = sliders[1].value;
-		const pixel = sliders[2].value;
 
-		context.clearRect(0, 0, canvas.width, canvas.height);
+		for(i = 0; i < sliders.length; i++) {
+			values[i] = params[i] > sliders[i].max ? params[i] : sliders[i].value;
+		}
 
-		const polygon = [];
-		polygon[0] = [0, -radius * (1 - 1 / scale)];
-		var angle;
-		for (j = 1; j < vertices; j++) {
-			angle = j * 6.28318530718 / vertices;
+		polygon[0] = [0, -radius * (1 - 1 / values[1])];
+		for (j = 1; j < values[0]; j++) {
+			angle = j * 6.28318530718 / values[0];
 			polygon[j] = [
 				(polygon[0][0] * Math.cos(angle)) - (polygon[0][1] * Math.sin(angle)) + x,
 				(polygon[0][0] * Math.sin(angle)) + (polygon[0][1] * Math.cos(angle)) + y
@@ -55,27 +81,34 @@
 		}
 		polygon[0] = [polygon[0][0] + x, polygon[0][1] + y];
 
-		var randomX = x;
-		var randomY = y;
-		var randomVertex = [];
-		var pixelOffset;
-		for (n = 0; n < 50000 / pixel; n++) {
-			randomVertex = polygon[Math.floor(Math.random() * vertices)];
+		randomX = x;
+		randomY = y;
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		for (n = 0; n < 50000 / values[2]; n++) {
+			randomVertex = polygon[Math.floor(Math.random() * values[0])];
 
-			randomX = ((randomVertex[0] * scale - x) + randomX) / scale;
-			randomY = ((randomVertex[1] * scale - y) + randomY) / scale;
+			randomX = ((randomVertex[0] * values[1] - x) + randomX) / values[1];
+			randomY = ((randomVertex[1] * values[1] - y) + randomY) / values[1];
 
 			context.fillStyle = `#${Math.floor(Math.random()*16777215).toString(16)}`;
 
-			context.fillRect(randomX, randomY, pixel, pixel);
+			context.fillRect(randomX, randomY, values[2], values[2]);
 		}
 	}
+
+	function setParams() {
+		history.pushState({}, null, window.location.href?.split("?")[0] + `?purple=${sliders[0].value}&green=${sliders[1].value}&orange=${sliders[2].value}`);
+		params = [sliders[0].value, sliders[1].value, sliders[2].value];
+	}
+
+	init();
 
 	function reportWindowSize() {
 		init();
 	}
 
 	window.onresize = reportWindowSize;
+
 </script>
 
 <style>
