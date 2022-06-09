@@ -17,11 +17,10 @@
 		document.getElementById("pixel-slider")
 	];
 	const context = canvas.getContext('2d');
-	console.log(window.location.href);
 	const rawParams = window.location.href?.split("?")[1];
 	var params = rawParams?.split("&")?.map(p => p?.split("=")[1]);
 
-	if(!params || params.filter(p => p !== undefined).length != 3) {
+	if(!params || params.filter(p => p !== undefined).length < 3) {
 		setParams();
 	}
 
