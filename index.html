@@ -45,7 +45,7 @@
 		canvas.width = maxWidth;
 		canvas.height = maxHeight;
 		x = maxWidth / 2;
-		y = (maxWidth < maxHeight ? maxWidth : maxHeight) / 2;
+		y = maxHeight / 2;
 		radius = (x > y ? y : x);
 
 		for (i = 0; i < sliders.length; i++) {
@@ -113,7 +113,6 @@
 
 <style>
 	#canv {
-		transform: scale(0.9);
 		border: 0px;
 		height: 100%;
 		width: 100%;
