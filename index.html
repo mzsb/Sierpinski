@@ -106,6 +106,54 @@
 	function reportWindowSize() {
 		init();
 	}
+	
+	const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+
+	const randInt = (min, max) => Math.floor(Math.random() * (max - min) ) + min;
+
+
+	window.addEventListener('load', async function () {
+
+
+		const datas = [[0,3,10], [1,2,6], [2,3,6]]
+
+		const rands = []
+
+		datas.forEach(element => {
+			sliders[element[0]].min = element[1]
+			sliders[element[0]].max = element[2]
+
+			rands.push(element[2] / 2)
+		});
+
+		do {
+
+			for await (const data of datas) {
+		
+				var d = Math.floor(Math.random() * 2) % 2 === 0 ? 1 : -1
+
+				var index = rands[data[0]]
+				rands[data[0]] = randInt(index, d > 0 ? data[2] : data[1])
+
+				while(Math.abs(index - rands[data[0]]) >= 0.1) {
+					
+					await sleep(0)
+
+					index += 0.1 * d
+
+					sliders[data[0]].value = index;
+
+					setParams()
+					sierpinski(x, y, radius)
+
+				}
+			}
+
+
+		} while(true)
+	})
+
 
 	window.onresize = reportWindowSize;
 
