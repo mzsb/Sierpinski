@@ -3,9 +3,9 @@
 </head>
 <body style="background: #000000; margin: 0; padding: 0; border: 0;">
 	<canvas id="canv"></canvas>
-	<input type="range" min="0.7" max="10.7" value="1.7" step="0.001" id="pixel-slider" class="slider">
-	<input type="range" min="2" max="12" value="3" step="0.001" id="vertice-slider" class="slider">
-	<input type="range" min="1" max="11" value="2" step="0.001" id="scale-slider" class="slider">
+	<input type="range" min="0.7" max="10.7" value="1.7" step="0.001" id="pixel-slider" class="slider" hidden>
+	<input type="range" min="2" max="12" value="3" step="0.001" id="vertice-slider" class="slider" hidden>
+	<input type="range" min="1" max="11" value="2" step="0.001" id="scale-slider" class="slider" hidden>
 </body>
 <script>
     document.title = "Sierpinski";
@@ -125,24 +125,25 @@
 			sliders[element[0]].max = element[2]
 
 			rands.push(element[2] / 2)
+
+			element.push(element[2] / 2)
 		});
 
 		do {
-
 			for await (const data of datas) {
 		
 				var d = Math.floor(Math.random() * 2) % 2 === 0 ? 1 : -1
 
-				var index = rands[data[0]]
-				rands[data[0]] = randInt(index, d > 0 ? data[2] : data[1])
+				rands[data[0]] = randInt(data[3], d > 0 ? data[2] : data[1])
 
-				while(Math.abs(index - rands[data[0]]) >= 0.1) {
+				
+				while(Math.abs(data[3] - rands[data[0]]) >= 0.1) {
 					
 					await sleep(0)
 
-					index += 0.1 * d
+					data[3] += 0.08 * d
 
-					sliders[data[0]].value = index;
+					sliders[data[0]].value = data[3];
 
 					setParams()
 					sierpinski(x, y, radius)
