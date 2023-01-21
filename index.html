@@ -147,7 +147,6 @@
 
 					setParams()
 					sierpinski(x, y, radius)
-
 				}
 			}
 
@@ -161,12 +160,25 @@
 </script>
 
 <style>
+	body,html {
+		overflow: hidden;
+	}
+	@keyframes rotation {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(359deg);
+	}
+	}
+
 	#canv {
 		transform: scale(0.9);
 		border: 0px;
 		height: 100%;
 		width: 100%;
 		background: #000000;
+		animation: rotation 42s infinite linear;
 	}
 
 	#vertice-slider {
