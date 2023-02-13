@@ -3,26 +3,12 @@
 </head>
 <body style="background: #000000; margin: 0; padding: 0; border: 0;">
 	<canvas id="canv"></canvas>
-	<input type="range" min="0.7" max="10.7" value="1.7" step="0.001" id="pixel-slider" class="slider" hidden>
-	<input type="range" min="2" max="12" value="3" step="0.001" id="vertice-slider" class="slider" hidden>
-	<input type="range" min="1" max="11" value="2" step="0.001" id="scale-slider" class="slider" hidden>
 </body>
 <script>
-    document.title = "Sierpinski";
+   document.title = "Sierpinski";
 	console.log("Mathematical simulation by Barnabás Mózs. https://github.com/mzsb/sierpinski");
 	const canvas = document.getElementById('canv');
-	const sliders = [
-		document.getElementById("vertice-slider"),
-		document.getElementById("scale-slider"),
-		document.getElementById("pixel-slider")
-	];
 	const context = canvas.getContext('2d');
-	const rawParams = window.location.href?.split("?")[1];
-	var params = rawParams?.split("&")?.map(p => p?.split("=")[1]);
-
-	if(!params || params.filter(p => p !== undefined).length < 3) {
-		setParams();
-	}
 
 	//init variables
 	var maxWidth;
@@ -48,29 +34,10 @@
 		y = maxHeight / 2;
 		radius = (x > y ? y : x);
 
-		for (i = 0; i < sliders.length; i++) {
-			sliders[i].oninput = () => {
-				setParams();
-				sierpinski(x, y, radius) 
-			};
-			sliders[i].style.width = 2 * radius;
-			sliders[i].style.left = x - radius;
-			sliders[i].style.top = y;
-			if(parseFloat(params[i]) > parseFloat(sliders[i].max)) {
-				sliders[i].max = params[i];
-			}
-			sliders[i].value = params[i];
-		}
-
 		sierpinski(x, y, radius);
 	}
 
 	function sierpinski(x, y, radius) {
-
-		for(i = 0; i < sliders.length; i++) {
-			values[i] = params[i] > sliders[i].max ? params[i] : sliders[i].value;
-		}
-
 		polygon[0] = [0, -radius * (1 - 1 / values[1])];
 		for (j = 1; j < values[0]; j++) {
 			angle = j * 6.28318530718 / values[0];
@@ -96,11 +63,6 @@
 		}
 	}
 
-	function setParams() {
-		history.pushState({}, null, window.location.href?.split("?")[0] + `?purple=${sliders[0].value}&green=${sliders[1].value}&orange=${sliders[2].value}`);
-		params = [sliders[0].value, sliders[1].value, sliders[2].value];
-	}
-
 	init();
 
 	function reportWindowSize() {
@@ -121,9 +83,6 @@
 		const rands = []
 
 		datas.forEach(element => {
-			sliders[element[0]].min = element[1]
-			sliders[element[0]].max = element[2]
-
 			rands.push(element[2] / 2)
 
 			element.push(element[2] / 2)
@@ -143,7 +102,7 @@
 
 					data[3] += 0.08 * d
 
-					sliders[data[0]].value = data[3];
+					values[data[0]] = data[3];
 
 					sierpinski(x, y, radius)
 				}
