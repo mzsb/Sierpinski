@@ -1,14 +1,18 @@
+<!DOCTYPE html>
 <head>
 	<link rel="icon" type="image/x-icon" href="favicon.png">
+	<title>Sierpinski</title>
 </head>
-<body style="background: #000000; margin: 0; padding: 0; border: 0;">
+<body>
 	<canvas id="canv"></canvas>
 </body>
 <script>
-   document.title = "Sierpinski";
-	console.log("Mathematical simulation by Barnabás Mózs. https://github.com/mzsb/sierpinski");
-	const canvas = document.getElementById('canv');
-	const context = canvas.getContext('2d');
+   console.log(
+		"%cMathematical simulation by Barnabás Mózs. https://github.com/mzsb/sierpinski", 
+		"font-size: 2em;");
+
+	const canvas = document.getElementById("canv");
+	const context = canvas.getContext("2d");
 
 	//init variables
 	var maxWidth;
@@ -78,7 +82,7 @@
 	window.addEventListener('load', async function () {
 
 
-		const datas = [[0,3,10], [1,2,6], [2,3,6]]
+		const datas = [[0,3,10], [1,2,6], [2,3,8]]
 
 		const rands = []
 
@@ -100,7 +104,7 @@
 					
 					await sleep(0)
 
-					data[3] += 0.08 * d
+					data[3] += 0.03 * d
 
 					values[data[0]] = data[3];
 
@@ -118,7 +122,13 @@
 </script>
 
 <style>
-	body,html {
+
+	:root {
+		--bg-color: black;
+	}
+
+	body, html {
+		background: var(--bg-color); 
 		overflow: hidden;
 	}
 	@keyframes rotation {
@@ -135,32 +145,12 @@
 		border: 0px;
 		height: 100%;
 		width: 100%;
-		background: #000000;
+		background: var(--bg-color);
 		animation: rotation 42s infinite linear;
 	}
 
 	#vertice-slider {
 		transform: rotate(30deg);
-	}
-
-	#scale-slider {
-		transform: rotate(150deg);
-	}
-
-	#pixel-slider {
-		transform: rotate(-90deg);
-	}
-
-	#vertice-slider::-webkit-slider-thumb {
-		background: purple;
-	}
-
-	#scale-slider::-webkit-slider-thumb {
-		background: green;
-	}
-
-	#pixel-slider::-webkit-slider-thumb {
-		background: orange;
 	}
 
 	.slider {
