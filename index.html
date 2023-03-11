@@ -64,7 +64,7 @@
 			randomX = ((randomVertex[0] * values[1] - x) + randomX) / values[1];
 			randomY = ((randomVertex[1] * values[1] - y) + randomY) / values[1];
 
-			context.fillStyle = `#${Math.floor(values[0]*16777215/Math.sqrt(randomX*randomX + randomY*randomY)).toString(16)}`;
+			context.fillStyle = `#${Math.floor(values[0]*randInt(1,16777215*2)/Math.sqrt(randomX*randomX + randomY*randomY)).toString(16)}`;
 
 			context.fillRect(randomX, randomY, values[2], values[2]);
 		}
@@ -116,7 +116,7 @@
 
 					
 					context.clearRect(0, 0, canvas.width, canvas.height);
-					for (var i = -11; i <= 11; i+=6) {
+					for (var i = -11; i <= 14; i+=5) {
 						sierpinski(x, y, radius * i)
 					}
 				}
