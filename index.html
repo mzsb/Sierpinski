@@ -28,6 +28,7 @@
 	var randomX;
 	var randomY;
 	var randomVertex = [];
+	var d = 0;
 
 	function init() {
 		maxWidth = window.innerWidth - 3;
@@ -36,7 +37,7 @@
 		canvas.height = maxHeight;
 		x = maxWidth / 2;
 		y = maxHeight / 2;
-		radius = (x > y ? y : x);
+		radius = (x > y ? y : x) / 5;
 
 		sierpinski(x, y, radius);
 	}
@@ -46,25 +47,30 @@
 		for (j = 1; j < values[0]; j++) {
 			angle = j * 6.28318530718 / values[0];
 			polygon[j] = [
-				(polygon[0][0] * Math.cos(angle)) - (polygon[0][1] * Math.sin(angle)) + x,
-				(polygon[0][0] * Math.sin(angle)) + (polygon[0][1] * Math.cos(angle)) + y
+				(polygon[0][0] * Math.cos(angle + d)) - (polygon[0][1] * Math.sin(angle + d)) + x,
+				(polygon[0][0] * Math.sin(angle + d)) + (polygon[0][1] * Math.cos(angle + d)) + y
 			];
 		}
-		polygon[0] = [polygon[0][0] + x, polygon[0][1] + y];
+		polygon[0] = [
+				(polygon[0][0] * Math.cos(d)) - (polygon[0][1] * Math.sin(d)) + x,
+				(polygon[0][0] * Math.sin(d)) + (polygon[0][1] * Math.cos(d)) + y
+			];
 
 		randomX = x;
 		randomY = y;
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		for (n = 0; n < 50000 / values[2]; n++) {
+		for (n = 0; n < 25000 / values[2]; n++) {
 			randomVertex = polygon[Math.floor(Math.random() * values[0])];
 
 			randomX = ((randomVertex[0] * values[1] - x) + randomX) / values[1];
 			randomY = ((randomVertex[1] * values[1] - y) + randomY) / values[1];
 
-			context.fillStyle = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+			context.fillStyle = `#${Math.floor(values[0]*16777215/Math.sqrt(randomX*randomX + randomY*randomY)).toString(16)}`;
 
 			context.fillRect(randomX, randomY, values[2], values[2]);
 		}
+
+		d -= d === 2*Math.PI ? d : radius / (Math.PI / 2)
+
 	}
 
 	init();
@@ -82,7 +88,7 @@
 	window.addEventListener('load', async function () {
 
 
-		const datas = [[0,3,10], [1,2,6], [2,3,8]]
+		const datas = [[0,3,7], [1,2,6], [2,3,5]]
 
 		const rands = []
 
@@ -104,11 +110,15 @@
 					
 					await sleep(0)
 
-					data[3] += 0.03 * d
+					data[3] += 0.01 * d
 
 					values[data[0]] = data[3];
 
-					sierpinski(x, y, radius)
+					
+					context.clearRect(0, 0, canvas.width, canvas.height);
+					for (var i = -11; i <= 11; i+=6) {
+						sierpinski(x, y, radius * i)
+					}
 				}
 			}
 
@@ -128,49 +138,27 @@
 	}
 
 	body, html {
+		cursor: none;
 		background: var(--bg-color); 
 		overflow: hidden;
+		margin: 0;
 	}
+
 	@keyframes rotation {
 	from {
 		transform: rotate(0deg);
 	}
 	to {
-		transform: rotate(359deg);
+		transform: rotate(-359deg);
 	}
 	}
 
 	#canv {
-		transform: scale(0.9);
 		border: 0px;
 		height: 100%;
 		width: 100%;
 		background: var(--bg-color);
-		animation: rotation 42s infinite linear;
-	}
-
-	#vertice-slider {
-		transform: rotate(30deg);
-	}
-
-	.slider {
-		position: absolute;
-		-webkit-appearance: none;
-		height: 0;
-		border-radius: 5px;
-		background: transparent;
-		cursor: pointer;
-		margin: 0 0 0 2;
-	}
-
-	.slider::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 1.7vmin;
-		height: 1.7vmin;
-		opacity: 0.7;
-		border-radius: 100%;
-		cursor: pointer;
+		opacity: 0.5;
 	}
 
 </style>
