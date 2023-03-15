@@ -4,14 +4,14 @@
 	<title>Sierpinski</title>
 </head>
 <body>
-	<canvas id="canv"></canvas>
+	<canvas class="canv"></canvas>
 </body>
 <script>
    console.log(
 		"%cMathematical simulation by Barnabás Mózs. https://github.com/mzsb/sierpinski", 
 		"font-size: 2em;");
 
-	const canvas = document.getElementById("canv");
+	const canvas = document.getElementsByClassName("canv")[0];
 	const context = canvas.getContext("2d");
 
 	//init variables
@@ -45,7 +45,7 @@
 	function sierpinski(x, y, radius) {
 		polygon[0] = [0, -radius * (1 - 1 / values[1])];
 		for (j = 1; j < values[0]; j++) {
-			angle = j * 6.28318530718 / values[0];
+			angle = j * 2 *Math.PI / values[0];
 			polygon[j] = [
 				(polygon[0][0] * Math.cos(angle + d)) - (polygon[0][1] * Math.sin(angle + d)) + x,
 				(polygon[0][0] * Math.sin(angle + d)) + (polygon[0][1] * Math.cos(angle + d)) + y
@@ -88,7 +88,7 @@
 	window.addEventListener('load', async function () {
 
 
-		const datas = [[0,3,7], [1,2,6], [2,3,5]]
+		const datas = [[0,3,7], [1,2,6], [2,2.5,3]]
 
 		const rands = []
 
@@ -97,6 +97,7 @@
 
 			element.push(element[2] / 2)
 		});
+
 
 		do {
 			for await (const data of datas) {
@@ -153,11 +154,12 @@
 	}
 	}
 
-	#canv {
+	.canv {
+		transform: scale(2);
 		border: 0px;
 		height: 100%;
 		width: 100%;
-		background: var(--bg-color);
+		background: transparent;
 		opacity: 0.5;
 	}
 
