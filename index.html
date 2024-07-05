@@ -13,6 +13,7 @@
 
 	const canvas = document.getElementById("canv");
 	const context = canvas.getContext("2d");
+	context.lineWidth = 3;
 
 	//init variables
 	var maxWidth;
@@ -55,15 +56,23 @@
 		randomX = x;
 		randomY = y;
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		for (n = 0; n < 50000 / values[2]; n++) {
+		context.strokeStyle = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+		context.beginPath();
+		for (n = 0; n < 100000 / values[2]; n++) {
 			randomVertex = polygon[Math.floor(Math.random() * values[0])];
 
 			randomX = ((randomVertex[0] * values[1] - x) + randomX) / values[1];
 			randomY = ((randomVertex[1] * values[1] - y) + randomY) / values[1];
 
-			context.fillStyle = `#${Math.floor(Math.random()*16777215).toString(16)}`;
 
-			context.fillRect(randomX, randomY, values[2], values[2]);
+			context.moveTo(randomX, randomY);
+			context.lineTo(randomX + 2, randomY + 2);
+
+			if(n % 250 ===0) {
+				context.stroke();
+				context.strokeStyle = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+				context.beginPath();
+			}
 		}
 	}
 
