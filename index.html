@@ -13,7 +13,7 @@
 
 	const canvas = document.getElementById("canv");
 	const context = canvas.getContext("2d");
-	context.lineWidth = 3;
+	context.lineWidth = 5;
 
 	//init variables
 	var maxWidth;
@@ -29,6 +29,8 @@
 	var randomX;
 	var randomY;
 	var randomVertex = [];
+	var datas = [];
+	var rands = [];
 
 	function init() {
 		maxWidth = window.innerWidth - 3;
@@ -66,7 +68,7 @@
 
 
 			context.moveTo(randomX, randomY);
-			context.lineTo(randomX + 2, randomY + 2);
+			context.lineTo(randomX + 2.5, randomY + 2.5);
 
 			if(n % 250 ===0) {
 				context.stroke();
@@ -87,13 +89,9 @@
 
 	const randInt = (min, max) => Math.floor(Math.random() * (max - min) ) + min;
 
-
 	window.addEventListener('load', async function () {
 
-
-		const datas = [[0,3,10], [1,2,6], [2,3,8]]
-
-		const rands = []
+		datas = [[0,3,10], [1,2,6], [2,3,8]]
 
 		datas.forEach(element => {
 			rands.push(element[2] / 2)
@@ -101,29 +99,31 @@
 			element.push(element[2] / 2)
 		});
 
-		do {
-			for await (const data of datas) {
-		
-				var d = Math.floor(Math.random() * 2) % 2 === 0 ? 1 : -1
-
-				rands[data[0]] = randInt(data[3], d > 0 ? data[2] : data[1])
-
-				
-				while(Math.abs(data[3] - rands[data[0]]) >= 0.1) {
-					
-					await sleep(0)
-
-					data[3] += 0.03 * d
-
-					values[data[0]] = data[3];
-
-					sierpinski(x, y, radius)
-				}
-			}
-
-
-		} while(true)
+		await animate()
 	})
+
+	async function animate() {
+		for await (const data of datas) {
+		
+			var d = Math.floor(Math.random() * 2) % 2 === 0 ? 1 : -1
+
+			rands[data[0]] = randInt(data[3], d > 0 ? data[2] : data[1])
+
+			
+			while(Math.abs(data[3] - rands[data[0]]) >= 0.1) {
+				
+				await sleep(0)
+
+				data[3] += 0.03 * d
+
+				values[data[0]] = data[3];
+
+				sierpinski(x, y, radius)
+			}
+		}
+
+    	requestAnimationFrame(animate);
+	}
 
 
 	window.onresize = reportWindowSize;
